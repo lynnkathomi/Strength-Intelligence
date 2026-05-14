@@ -55,7 +55,11 @@ from datetime import timedelta
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000", "http://127.0.0.1:3000"], supports_credentials=True)
+
+default_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+cors_origins = os.getenv("CORS_ORIGINS", ",".join(default_origins))
+cors_origin_list = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
+CORS(app, origins=cors_origin_list, supports_credentials=True)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "si.db")
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -539,9 +543,7 @@ def get_ai_client():
 
 @app.route("/health")
 def health():
-    with get_db() as db:
-        count = db.execute("SELECT COUNT(*) as c FROM profiles").fetchone()["c"]
-    return jsonify({"status":"ok","service":"strength-intelligence","profiles":count,"ts":datetime.utcnow().isoformat()})
+    return jsonify({"status":"ok","service":"strength-intelligence","ts":datetime.utcnow().isoformat()})
 
 @app.route("/api/archetypes")
 def get_archetypes():
