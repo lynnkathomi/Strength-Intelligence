@@ -3418,10 +3418,12 @@ def auth_change_pw():
 
 # ── Startup ───────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    port  = int(os.getenv("PORT", 5000))
-    debug = os.getenv("NODE_ENV", "development") == "development"
+    port      = int(os.getenv("PORT", 5000))
+    node_env  = os.getenv("NODE_ENV", os.getenv("FLASK_ENV", "production"))
+    debug     = node_env == "development"
     print(f"\n  ◆  STRENGTH INTELLIGENCE API  ◆")
     print(f"  Running on http://localhost:{port}")
     print(f"  Database: {DB_PATH}")
+    print(f"  Environment: {node_env}")
     print(f"  AI: {'Connected' if get_ai_client() else 'Fallback mode (add ANTHROPIC_API_KEY for full AI)'}\n")
     app.run(host="0.0.0.0", port=port, debug=debug)

@@ -2,6 +2,8 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
+ENV NODE_ENV=production
+
 RUN apt-get update && apt-get install -y build-essential rustc && rm -rf /var/lib/apt/lists/*
 
 COPY backend/requirements.txt .
