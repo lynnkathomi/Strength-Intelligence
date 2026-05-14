@@ -1,10 +1,21 @@
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+const BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
+
+if (!BASE) {
+  console.error("REACT_APP_API_URL is not set. Set it in Vercel environment variables to your backend API URL.");
+}
 
 function getToken() {
   return localStorage.getItem("si_access_token") || "";
 }
 
+export async function post(path, body, opts = {}) {
+  return req(path, { method: "POST", body: JSON.stringify(body), ...opts });
+}
+
 async function req(path, opts = {}) {
+  if (!BASE) {
+    throw new Error("API base URL is not set. Set REACT_APP_API_URL in your Vercel environment.");
+  }
   const token = getToken();
   const res = await fetch(`${BASE}${path}`, {
     headers: {
