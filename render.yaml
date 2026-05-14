@@ -2,7 +2,6 @@ services:
   - type: web
     name: strength-intelligence-backend
     env: docker
-    buildContext: backend
     dockerfilePath: Dockerfile
     branch: main
     plan: starter
