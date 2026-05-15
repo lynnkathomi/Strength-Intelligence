@@ -1312,8 +1312,7 @@ def ai_interpret():
         narrative = (
             f"{profile['name']} demonstrates a dominant {primary_name} strength, supported by a strong {secondary_name} orientation. "
             f"This combination positions them as someone who both drives meaningful outcomes and brings the depth needed to sustain them. "
-            f"To maximise their impact, ensure their role gives full expression to their primary stone — without it, expect disengagement over time. "
-            f"[Add your ANTHROPIC_API_KEY in .env for a personalised Claude AI narrative]"
+            f"To maximise their impact, ensure their role gives full expression to their primary stone — without it, expect disengagement over time."
         )
         return jsonify({"data":{"narrative":narrative,"aiPowered":False}})
 
@@ -2345,9 +2344,7 @@ To close the {arch_info.get('name', arch_id)} gap this week:
 1. Spend 20 minutes on {course_title or 'your current module'}
 2. Apply one concept in a real work context — not just theoretical study
 3. Ask a colleague for specific feedback on {arch_id}-related behaviour
-4. Record what you noticed in the reflection section
-
-Add your ANTHROPIC_API_KEY to .env for personalised AI coaching responses."""
+4. Record what you noticed in the reflection section"""
 
             return jsonify({"data": {"response": fallback, "aiPowered": False}})
 
@@ -2374,7 +2371,7 @@ Add your ANTHROPIC_API_KEY to .env for personalised AI coaching responses."""
         except Exception as e:
             # If 401, key is invalid — use fallback rather than crashing
             if '401' in str(e) or 'authentication' in str(e).lower():
-                return jsonify({"data": {"response": f"AI coaching unavailable — check your ANTHROPIC_API_KEY in .env. Session type: {session_type}", "aiPowered": False}})
+                return jsonify({"data": {"response": f"Coaching session temporarily unavailable. Please try again shortly.", "aiPowered": False}})
             return jsonify({"error": f"AI session error: {str(e)}"}), 503
 
 
@@ -2446,9 +2443,7 @@ Quick assessment:
 - {review_data['hours']} hours this week is {'strong' if int(review_data['hours'] or 0) >= 5 else 'below target — aim for 5+ hours'}
 - Energy at {review_data['energy']}/10 suggests {'good momentum' if int(review_data['energy'] or 7) >= 7 else 'something needs adjusting — check if the material is too abstract'}
 
-Next week focus: Address what remained unclear: {review_data['unclear'] or 'review your notes and identify the sticking point'}
-
-Add your ANTHROPIC_API_KEY for a full AI coaching review."""
+Next week focus: Address what remained unclear: {review_data['unclear'] or 'review your notes and identify the sticking point'}"""
             return jsonify({"data": {"response": review_response, "aiPowered": False}})
 
         try:
@@ -2472,7 +2467,7 @@ Add your ANTHROPIC_API_KEY for a full AI coaching review."""
             return jsonify({"data": {"response": review_response, "aiPowered": True, "reviewId": review_id}})
         except Exception as e:
             if '401' in str(e) or 'authentication' in str(e).lower():
-                return jsonify({"data": {"response": f"Weekly review unavailable — check your ANTHROPIC_API_KEY in .env.", "aiPowered": False}})
+                return jsonify({"data": {"response": f"Weekly review temporarily unavailable. Please try again shortly.", "aiPowered": False}})
             return jsonify({"error": f"AI review error: {str(e)}"}), 503
 
 

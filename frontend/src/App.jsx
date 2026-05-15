@@ -53,9 +53,9 @@ export default function App() {
   }
 
   function handleLogout() {
-    fetch(`${BASE}/auth/logout`, {
-      method: "POST", headers: { Authorization: `Bearer ${token}` }
-    }).catch(() => {});
+    // Call logout endpoint, but don't wait for response
+    api.logout().catch(() => {});
+    // Clear local session
     localStorage.removeItem("si_access_token");
     localStorage.removeItem("si_refresh_token");
     localStorage.removeItem("si_user");

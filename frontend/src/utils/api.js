@@ -100,6 +100,7 @@ export const api = {
   listUsers:      ()     => req("/auth/users"),
   inviteUser:     (body) => req("/auth/users/invite", { method:"POST", body: JSON.stringify(body) }),
   changePassword: (body) => req("/auth/change-password", { method:"POST", body: JSON.stringify(body) }),
+  logout:         ()     => req("/auth/logout", { method:"POST" }),
 };
 
 export const lmsApi = {

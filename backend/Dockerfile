@@ -11,4 +11,4 @@ RUN mkdir -p data
 
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]

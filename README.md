@@ -47,6 +47,32 @@ Then open: http://localhost:3000
 
 ---
 
+## Deploying to Render + Vercel
+
+This repo already includes deployment config:
+- `render.yaml` for the backend Docker service on Render
+- `vercel.json` for the frontend static build on Vercel
+
+### Backend on Render
+1. Connect your GitHub repo to Render.
+2. Import the service defined in `render.yaml`.
+3. Set these environment variables in Render:
+   - `PORT=5000`
+   - `JWT_SECRET=<secure-production-secret>`
+   - `CORS_ORIGINS=https://<your-vercel-app>.vercel.app`
+   - `APP_URL=https://<your-vercel-app>.vercel.app`
+   - optional email / SMTP vars if you want invite email support
+
+### Frontend on Vercel
+1. Connect your GitHub repo to Vercel.
+2. Deploy using the existing `vercel.json` config.
+3. Set this environment variable in Vercel:
+   - `REACT_APP_API_URL=https://<your-render-backend-url>/api`
+
+> If `ANTHROPIC_API_KEY` is not set, the app still works with AI narrative fallback mode.
+
+---
+
 ## What you get
 
 ### 5 pages, all working:
