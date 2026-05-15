@@ -18,14 +18,15 @@ async function req(path, opts = {}) {
     throw new Error("API base URL is not set. Set REACT_APP_API_URL in your Vercel environment.");
   }
   const token = getToken();
-  const res = await fetch(`${BASE}${path}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...opts.headers,
-    },
-    ...opts,
-  });
+  try {
+    const res = await fetch(`${BASE}${path}`, {
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...opts.headers,
+      },
+      ...opts,
+    });
 
   if (res.status === 401) {
     const errJson = await res.json().catch(() => ({}));
@@ -65,6 +66,12 @@ async function req(path, opts = {}) {
   const json = await res.json();
   if (!res.ok) throw new Error(json.error || `HTTP ${res.status}`);
   return json;
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new Error(`Failed to reach ${BASE}. Check if the backend is running and CORS is enabled.`);
+    }
+    throw err;
+  }
 }
 
 export const api = {

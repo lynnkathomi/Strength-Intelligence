@@ -1,17 +1,5 @@
 import React, { useState } from "react";
-
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
-
-async function post(path, body) {
-  const r = await fetch(`${BASE}${path}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
-  const json = await r.json();
-  if (!r.ok) throw new Error(json.error || `HTTP ${r.status}`);
-  return json;
-}
+import { api, post } from "../utils/api";
 
 // ── Forced password change screen ─────────────────────────────────────────────
 function ChangePasswordPrompt({ user, token, onDone }) {
@@ -45,13 +33,7 @@ function ChangePasswordPrompt({ user, token, onDone }) {
     if (form.newPw === "SI2026Launch!") { setError("Please choose a new password — don't reuse the shared one"); return; }
     setLoading(true);
     try {
-      await fetch(`${BASE}/auth/change-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ currentPassword: form.current, newPassword: form.newPw }),
-      }).then(r => r.json()).then(json => {
-        if (json.error) throw new Error(json.error);
-      });
+      await api.changePassword({ currentPassword: form.current, newPassword: form.newPw });
       onDone();
     } catch (err) {
       setError(err.message);
@@ -224,7 +206,8 @@ export default function Auth({ onAuth }) {
         onAuth(data.user, data.accessToken);
       }
     } catch (err) {
-      setError(err.message);
+      console.error("Login error:", err);
+      setError(err.message || "Failed to reach the server. Please check your connection.");
     } finally {
       setLoading(false);
     }
