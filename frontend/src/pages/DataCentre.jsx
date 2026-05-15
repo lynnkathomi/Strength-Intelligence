@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { api } from "../utils/api";
+import { api, dataApi } from "../utils/api";
 
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 const dcApi = {
-  health:      () => fetch(`${BASE}/data-centre/health`).then(r=>r.json()),
-  validation:  () => fetch(`${BASE}/data-centre/validation`).then(r=>r.json()),
-  benchmarks:  () => fetch(`${BASE}/data-centre/benchmarks`).then(r=>r.json()),
-  modelHealth: () => fetch(`${BASE}/data-centre/model-improvement`).then(r=>r.json()),
-  exportData:  () => fetch(`${BASE}/data-centre/export`).then(r=>r.json()),
-  waitlist:    () => fetch(`${BASE}/waitlist`).then(r=>r.json()),
+  health:      () => dataApi.health(),
+  validation:  () => dataApi.validation(),
+  benchmarks:  () => dataApi.benchmarks(),
+  modelHealth: () => dataApi.modelImprovement(),
+  exportData:  () => dataApi.export(),
+  waitlist:    () => dataApi.waitlist ? dataApi.waitlist() : Promise.resolve({data:[]}),
   orgReport:   (email) => {
-    const url = `${BASE}/reports/organisation${email?`?email=${email}`:""}`;
+    const url = `${(process.env.REACT_APP_API_URL || "https://strength-intelligence.onrender.com/api")}/reports/organisation${email?`?email=${email}`:""}`;
     window.open(url,"_blank");
   },
   profileReport: (pid, email) => {
-    const url = `${BASE}/profiles/${pid}/report/pdf${email?`?email=${email}`:""}`;
+    const url = `${(process.env.REACT_APP_API_URL || "https://strength-intelligence.onrender.com/api")}/profiles/${pid}/report/pdf${email?`?email=${email}`:""}`;
     window.open(url,"_blank");
   },
 };

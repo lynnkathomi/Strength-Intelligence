@@ -8,8 +8,7 @@ import Outcomes from "./pages/Outcomes";
 import LMS from "./pages/LMS";
 import DataCentre from "./pages/DataCentre";
 import "./App.css";
-
-const BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+import { api } from "./utils/api";
 
 const NAV = [
   { id:"dashboard",  icon:"◈", label:"Dashboard",          section:"Overview"   },
@@ -35,32 +34,15 @@ export default function App() {
     const savedUser  = localStorage.getItem("si_user");
     if (savedToken && savedUser) {
       // Validate token still works
-      fetch(`${BASE}/auth/me`, { headers: { Authorization: `Bearer ${savedToken}` } })
-        .then(r => r.ok ? r.json() : null)
-        .then(json => {
-          if (json?.data) {
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
-          } else {
-            // Token expired — try refresh
-            const refresh = localStorage.getItem("si_refresh_token");
-            if (refresh) {
-              fetch(`${BASE}/auth/refresh`, {
-                method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ refreshToken: refresh }),
-              }).then(r => r.json()).then(json => {
-                if (json?.data?.accessToken) {
-                  const newToken = json.data.accessToken;
-                  localStorage.setItem("si_access_token", newToken);
-                  setToken(newToken);
-                  setUser(JSON.parse(savedUser));
-                }
-              }).catch(() => {});
-            }
-          }
-        })
-        .catch(() => {})
-        .finally(() => setLoading(false));
+      api.me().then(json => {
+        if (json?.data) {
+          setToken(savedToken);
+          setUser(JSON.parse(savedUser));
+        } else {
+          // Token expired — try refresh handled by api helper
+        }
+      }).catch(() => {})
+      .finally(() => setLoading(false));
     } else {
       setLoading(false);
     }
