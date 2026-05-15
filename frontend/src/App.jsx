@@ -23,10 +23,11 @@ const NAV = [
 ];
 
 export default function App() {
-  const [user,    setUser]    = useState(null);
-  const [token,   setToken]   = useState(null);
-  const [page,    setPage]    = useState("dashboard");
-  const [loading, setLoading] = useState(true);
+  const [user,      setUser]      = useState(null);
+  const [token,     setToken]     = useState(null);
+  const [page,      setPage]      = useState("dashboard");
+  const [loading,   setLoading]   = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Restore session on load
   useEffect(() => {
@@ -78,13 +79,20 @@ export default function App() {
     );
   }
 
-  if (!user) return <Auth onAuth={handleAuth}/>;
+  if (!user) return <Auth onAuth={handleAuth}/>
 
   const sections = [...new Set(NAV.map(n => n.section))];
+  const handleNavClick = (id) => {
+    setPage(id);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <div className="shell">
-      <nav className="sidebar">
+      <button className="menu-toggle" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+        {mobileMenuOpen ? "✕" : "☰"}
+      </button>
+      <nav className={`sidebar${mobileMenuOpen ? " open" : ""}`}>
         <div className="brand">
           <div className="brand-gem">SI</div>
           <div>
@@ -99,7 +107,7 @@ export default function App() {
             {NAV.filter(n => n.section === section).map(item => (
               <button key={item.id}
                 className={`nav-item${page === item.id ? " active" : ""}`}
-                onClick={() => setPage(item.id)}>
+                onClick={() => handleNavClick(item.id)}>
                 <span className="nav-icon">{item.icon}</span>
                 {item.label}
               </button>
