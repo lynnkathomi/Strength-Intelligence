@@ -1,7 +1,8 @@
-const BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "");
+const BASE = process.env.REACT_APP_API_URL
+  || (process.env.NODE_ENV === "development" ? "http://localhost:5000/api" : "https://strength-intelligence.onrender.com/api");
 
-if (!BASE) {
-  console.error("REACT_APP_API_URL is not set. Set it in Vercel environment variables to your backend API URL.");
+if (!process.env.REACT_APP_API_URL && process.env.NODE_ENV !== "development") {
+  console.warn("REACT_APP_API_URL is not set. Falling back to the Render backend URL.");
 }
 
 function getToken() {

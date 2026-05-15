@@ -59,7 +59,9 @@ app = Flask(__name__)
 default_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
 cors_origins = os.getenv("CORS_ORIGINS", ",".join(default_origins))
 cors_origin_list = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
-CORS(app, origins=cors_origin_list, supports_credentials=True)
+if not cors_origin_list:
+    cors_origin_list = ["*"]
+CORS(app, origins=cors_origin_list, supports_credentials=False)
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "data", "si.db")
 os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
